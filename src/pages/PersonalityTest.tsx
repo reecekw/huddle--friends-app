@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import { toast } from "sonner";
 import AppHeader from "@/components/AppHeader";
 
 const PersonalityTest = () => {
@@ -10,6 +11,41 @@ const PersonalityTest = () => {
   const [q2, setQ2] = useState([3]);
   const [q3, setQ3] = useState([50]);
   const [q4, setQ4] = useState([50]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionResult, setSubmissionResult] = useState<{
+    id: number;
+    totalSubmissions: number;
+  } | null>(null);
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    setSubmissionResult(null);
+    try {
+      const res = await fetch("/api/personality-results", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          q1: q1[0],
+          q2: q2[0],
+          q3: q3[0],
+          q4: q4[0],
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || "Failed to save results");
+      }
+      const data = await res.json();
+      setSubmissionResult({
+        id: data.id,
+        totalSubmissions: data.totalSubmissions,
+      });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to save results");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -99,13 +135,34 @@ const PersonalityTest = () => {
           </div>
         </div>
 
-        <Button
-          onClick={() => navigate("/chats")}
-          className="w-full h-12 text-base font-semibold rounded-xl bg-secondary text-secondary-foreground hover:bg-secondary/80"
-          variant="secondary"
-        >
-          Next
-        </Button>
+        {submissionResult ? (
+          <div className="space-y-4">
+            <div className="bg-primary/10 border border-primary/30 rounded-2xl p-5 text-center space-y-2">
+              <p className="font-semibold text-primary">Results saved!</p>
+              <p className="text-sm text-muted-foreground">
+                You are submission #{submissionResult.id}. Total submissions:{" "}
+                <span className="font-bold text-foreground">
+                  {submissionResult.totalSubmissions}
+                </span>
+              </p>
+            </div>
+            <Button
+              onClick={() => navigate("/chats")}
+              className="w-full h-12 text-base font-semibold rounded-xl"
+            >
+              Continue to Chats
+            </Button>
+          </div>
+        ) : (
+          <Button
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            className="w-full h-12 text-base font-semibold rounded-xl bg-secondary text-secondary-foreground hover:bg-secondary/80"
+            variant="secondary"
+          >
+            {isSubmitting ? "Saving..." : "Next"}
+          </Button>
+        )}
       </div>
     </div>
   );
