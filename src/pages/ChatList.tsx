@@ -1,39 +1,50 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronRight } from "lucide-react";
+import { Users } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import AppHeader from "@/components/AppHeader";
 
 const MOCK_GROUPS = [
   {
     id: "1",
     name: "The Boys",
-    members: ["Steve B.", "John C", "Karl G.", "Josh D.", "Phil F."],
-    avatar: "🏀",
+    members: ["Steve B.", "John C.", "Karl G.", "Josh D.", "Phil F."],
+    emoji: "🏀",
+    lastMessage: "Who's free tonight?",
+    unread: 3,
   },
   {
     id: "2",
     name: "Fortnite Quads",
-    members: ["Steve B.", "John C", "Karl G.", "Josh D.", "Phil F."],
-    avatar: "🎮",
+    members: ["Steve B.", "John C.", "Karl G.", "Josh D.", "Phil F."],
+    emoji: "🎮",
+    lastMessage: "GG's that was insane",
+    unread: 0,
   },
   {
     id: "3",
-    name: "Marketplace peeps",
-    members: ["Steve B.", "John C", "Karl G.", "Josh D.", "Phil F."],
-    avatar: "🏪",
-    hasCountdown: true,
+    name: "Marketplace Crew",
+    members: ["Steve B.", "John C.", "Karl G.", "Josh D.", "Phil F."],
+    emoji: "🏪",
+    lastMessage: "Found a great deal on...",
+    unread: 1,
   },
   {
     id: "4",
     name: "Study Squad",
     members: ["Kayla G.", "Becca M.", "Karl G.", "Emma P."],
-    avatar: "📚",
+    emoji: "📚",
+    lastMessage: "Library at 6?",
+    unread: 0,
   },
   {
     id: "5",
-    name: "The Boys",
-    members: ["Steve B.", "John C", "Karl G.", "Josh D.", "Phil F."],
-    avatar: "🎉",
+    name: "Weekend Warriors",
+    members: ["Steve B.", "John C.", "Karl G.", "Josh D.", "Phil F."],
+    emoji: "🎉",
+    lastMessage: "Saturday plans??",
+    unread: 5,
   },
 ];
 
@@ -57,11 +68,20 @@ const CountdownTimer = () => {
   const pad = (n: number) => String(n).padStart(2, "0");
 
   return (
-    <div className="text-foreground text-right">
-      <p className="text-3xl font-black tabular-nums">
-        {pad(time.h)}:{pad(time.m)}:{pad(time.s)}
-      </p>
-      <p className="text-lg font-bold">Until Drop</p>
+    <div className="flex gap-3 justify-center">
+      {[
+        { value: pad(time.h), label: "Hours" },
+        { value: pad(time.m), label: "Min" },
+        { value: pad(time.s), label: "Sec" },
+      ].map((unit, i) => (
+        <div key={unit.label} className="flex items-center gap-3">
+          <div className="text-center">
+            <p className="text-4xl font-black tabular-nums text-foreground">{unit.value}</p>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider mt-1">{unit.label}</p>
+          </div>
+          {i < 2 && <span className="text-2xl font-bold text-primary/50 -mt-4">:</span>}
+        </div>
+      ))}
     </div>
   );
 };
@@ -73,42 +93,57 @@ const ChatList = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <AppHeader />
 
-      <div className="flex-1 px-4 py-4 space-y-4">
-        {MOCK_GROUPS.map((group) => (
-          <div
-            key={group.id}
-            className={`flex items-center gap-3 ${group.hasCountdown ? "" : ""}`}
-          >
-            {/* Group Card */}
+      {/* Countdown Hero */}
+      <div className="px-4 pt-4">
+        <div className="bg-secondary rounded-2xl p-6 text-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-primary/5 rounded-2xl" />
+          <div className="relative">
+            <p className="text-xs text-muted-foreground uppercase tracking-widest mb-3">Next Introduction In</p>
+            <div className="animate-pulse-glow">
+              <CountdownTimer />
+            </div>
+            <p className="text-sm text-muted-foreground mt-4">New friends drop every 24 hours</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Groups */}
+      <div className="flex-1 px-4 py-6">
+        <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+          <Users className="w-5 h-5 text-primary" />
+          Your Groups
+        </h2>
+        <div className="space-y-3">
+          {MOCK_GROUPS.map((group) => (
             <button
+              key={group.id}
               onClick={() => navigate(`/chat/${group.id}`)}
-              className="bg-card text-card-foreground rounded-2xl p-4 flex-shrink-0 shadow-sm hover:shadow-md transition-shadow text-left"
-              style={{ minWidth: group.hasCountdown ? "55%" : "100%" }}
+              className="w-full bg-card rounded-2xl p-4 shadow-sm hover:bg-card/80 transition-colors text-left"
             >
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-xl">
-                  {group.avatar}
+              <div className="flex items-center gap-3">
+                <Avatar className="w-12 h-12 flex-shrink-0">
+                  <AvatarFallback className="bg-secondary text-xl">
+                    {group.emoji}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between mb-0.5">
+                    <h3 className="font-semibold text-sm text-foreground">{group.name}</h3>
+                    <Badge variant="secondary" className="text-[10px] bg-secondary border-0 px-2 py-0 text-muted-foreground">
+                      {group.members.length} members
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground truncate">{group.lastMessage}</p>
                 </div>
-                <h3 className="font-bold text-sm">{group.name}</h3>
-                <div className="ml-auto w-7 h-7 rounded-full bg-card-foreground flex items-center justify-center">
-                  <ChevronRight className="h-4 w-4 text-card" />
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
-                {group.members.map((m) => (
-                  <span key={m}>{m}</span>
-                ))}
+                {group.unread > 0 && (
+                  <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
+                    <span className="text-[10px] font-bold text-primary-foreground">{group.unread}</span>
+                  </div>
+                )}
               </div>
             </button>
-
-            {/* Countdown */}
-            {group.hasCountdown && (
-              <div className="flex-1">
-                <CountdownTimer />
-              </div>
-            )}
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
