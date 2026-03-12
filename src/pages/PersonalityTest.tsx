@@ -151,7 +151,7 @@ const PersonalityTest = () => {
 
       {/* Question Card */}
       <div className="flex-1 flex flex-col justify-center px-4 py-6">
-        <div key={currentQuestion} className="bg-card rounded-2xl p-6 shadow-lg max-w-sm mx-auto w-full animate-fade-in">
+        <div key={currentQuestion} className="bg-card rounded-2xl p-6 shadow-lg max-w-sm md:max-w-lg mx-auto w-full animate-fade-in">
           <p className="text-center font-semibold text-base mb-8 leading-relaxed">
             {q.question}
           </p>
@@ -170,7 +170,7 @@ const PersonalityTest = () => {
         </div>
 
         {/* Navigation */}
-        <div className="max-w-sm mx-auto w-full mt-6 space-y-3">
+        <div className="max-w-sm md:max-w-lg mx-auto w-full mt-6 space-y-3">
           <Button
             onClick={handleNext}
             disabled={isSubmitting}

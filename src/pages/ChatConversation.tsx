@@ -56,9 +56,9 @@ const ChatConversation = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col max-w-4xl mx-auto w-full">
       {/* Header */}
-      <header className="sticky top-0 z-50 flex items-center gap-3 px-4 py-3 bg-background/80 backdrop-blur-sm border-b border-border">
+      <header className="sticky top-0 z-50 flex items-center gap-3 px-4 md:px-8 py-3 bg-background/80 backdrop-blur-sm border-b border-border">
         <button
           onClick={() => navigate("/chats")}
           className="w-9 h-9 rounded-full bg-secondary border border-border flex items-center justify-center hover:bg-secondary/80 transition-colors"

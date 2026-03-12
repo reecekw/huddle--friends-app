@@ -2,48 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Dark theme with mint green accents - matching Figma designs */
-
 @layer base {
   :root {
-    --background: 0 0% 8%;
-    --foreground: 0 0% 98%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 8%;
 
-    --card: 0 0% 14%;
-    --card-foreground: 0 0% 98%;
+    --card: 0 0% 96%;
+    --card-foreground: 0 0% 8%;
 
-    --popover: 0 0% 12%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 8%;
 
-    --primary: 160 70% 65%;
-    --primary-foreground: 0 0% 8%;
+    --primary: 160 70% 40%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 16%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 0 0% 92%;
+    --secondary-foreground: 0 0% 8%;
 
-    --muted: 0 0% 16%;
-    --muted-foreground: 0 0% 60%;
+    --muted: 0 0% 92%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 160 70% 65%;
-    --accent-foreground: 0 0% 8%;
+    --accent: 160 70% 40%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 160 70% 65%;
+    --border: 0 0% 85%;
+    --input: 0 0% 85%;
+    --ring: 160 70% 40%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 10%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 160 70% 65%;
-    --sidebar-primary-foreground: 0 0% 8%;
-    --sidebar-accent: 0 0% 16%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 0 0% 20%;
-    --sidebar-ring: 160 70% 65%;
+    --sidebar-background: 0 0% 97%;
+    --sidebar-foreground: 0 0% 8%;
+    --sidebar-primary: 160 70% 40%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 92%;
+    --sidebar-accent-foreground: 0 0% 8%;
+    --sidebar-border: 0 0% 85%;
+    --sidebar-ring: 160 70% 40%;
   }
 
   .dark {

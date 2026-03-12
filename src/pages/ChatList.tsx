@@ -94,7 +94,7 @@ const ChatList = () => {
       <AppHeader />
 
       {/* Countdown Hero */}
-      <div className="px-4 pt-4">
+      <div className="px-4 md:px-8 pt-4 max-w-4xl mx-auto w-full">
         <div className="bg-secondary rounded-2xl p-6 text-center relative overflow-hidden">
           <div className="absolute inset-0 bg-primary/5 rounded-2xl" />
           <div className="relative">
@@ -108,12 +108,12 @@ const ChatList = () => {
       </div>
 
       {/* Groups */}
-      <div className="flex-1 px-4 py-6">
+      <div className="flex-1 px-4 md:px-8 py-6 max-w-4xl mx-auto w-full">
         <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
           <Users className="w-5 h-5 text-primary" />
           Your Groups
         </h2>
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {MOCK_GROUPS.map((group) => (
             <button
               key={group.id}

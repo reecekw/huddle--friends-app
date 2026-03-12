@@ -41,7 +41,7 @@ const GetStarted = () => {
 
       {/* Form */}
       <div className="flex-1 flex justify-center px-4 py-4">
-        <div className="bg-card rounded-2xl p-6 w-full max-w-sm shadow-lg space-y-5">
+        <div className="bg-card rounded-2xl p-6 w-full max-w-sm md:max-w-lg shadow-lg space-y-5">
           <div className="space-y-2">
             <Label className="font-semibold text-sm">First Name</Label>
             <Input

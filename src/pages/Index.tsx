@@ -10,6 +10,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { UserPlus, Clock, MessageCircle, Star, Instagram, Twitter, Youtube } from "lucide-react";
+import AppHeader from "@/components/AppHeader";
 
 const REVIEWS = [
   { quote: "I struggled to make friends after moving, but Huddle matched me with people who actually get me. Lifelong friends!", name: "Amanda", location: "San Francisco", stars: 5 },
@@ -43,18 +44,20 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <AppHeader />
+
       {/* Hero */}
       <section className="relative flex flex-col items-center justify-center px-6 pt-24 pb-16 text-center overflow-hidden">
         {/* Decorative glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-primary/15 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-primary/15 rounded-full blur-[100px] pointer-events-none" />
 
-        <h1 className="text-6xl font-black text-foreground leading-none tracking-tight animate-fade-in relative">
+        <h1 className="text-6xl md:text-8xl font-black text-foreground leading-none tracking-tight animate-fade-in relative">
           Huddle
         </h1>
-        <p className="text-xl font-semibold text-primary mt-3 animate-slide-up">
+        <p className="text-xl md:text-2xl font-semibold text-primary mt-3 animate-slide-up">
           New friends, every 24 hours.
         </p>
-        <p className="text-base text-muted-foreground mt-4 max-w-sm leading-relaxed animate-slide-up">
+        <p className="text-base md:text-lg text-muted-foreground mt-4 max-w-sm md:max-w-xl leading-relaxed animate-slide-up">
           We match you with people who get you — then drop you into a group chat. No swiping. No awkward intros.
         </p>
         <div className="flex gap-3 mt-8 animate-slide-up">
@@ -76,19 +79,19 @@ const Index = () => {
 
       {/* How It Works */}
       <section className="px-6 py-12">
-        <h2 className="text-2xl font-bold text-foreground text-center mb-8">How It Works</h2>
-        <div className="space-y-4 max-w-sm mx-auto">
+        <h2 className="text-2xl md:text-3xl font-bold text-foreground text-center mb-8">How It Works</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-sm md:max-w-4xl mx-auto">
           {STEPS.map((step, i) => (
-            <div key={step.title} className="bg-secondary rounded-2xl p-5 flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center">
-                <step.icon className="w-6 h-6 text-primary" />
+            <div key={step.title} className="bg-secondary rounded-2xl p-5 flex items-start gap-4 md:flex-col md:items-center md:text-center md:p-8">
+              <div className="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-xl bg-primary/15 flex items-center justify-center">
+                <step.icon className="w-6 h-6 md:w-8 md:h-8 text-primary" />
               </div>
               <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
+                <div className="flex items-center gap-2 mb-1 md:justify-center md:mb-2">
                   <Badge variant="secondary" className="text-[10px] bg-primary/10 text-primary border-0 px-2 py-0">
                     Step {i + 1}
                   </Badge>
-                  <h3 className="font-semibold text-foreground text-sm">{step.title}</h3>
+                  <h3 className="font-semibold text-foreground text-sm md:text-base">{step.title}</h3>
                 </div>
                 <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
               </div>
@@ -99,14 +102,14 @@ const Index = () => {
 
       {/* Reviews */}
       <section className="px-6 py-12">
-        <h2 className="text-2xl font-bold text-foreground text-center mb-2">What People Are Saying</h2>
+        <h2 className="text-2xl md:text-3xl font-bold text-foreground text-center mb-2">What People Are Saying</h2>
         <p className="text-sm text-muted-foreground text-center mb-8">Real stories from real users</p>
-        <div className="max-w-sm mx-auto">
+        <div className="max-w-sm md:max-w-4xl mx-auto">
           <Carousel className="w-full">
             <CarouselContent>
               {REVIEWS.map((r) => (
-                <CarouselItem key={r.name}>
-                  <div className="bg-secondary/50 border border-border rounded-2xl p-6 space-y-4">
+                <CarouselItem key={r.name} className="md:basis-1/2 lg:basis-1/3">
+                  <div className="bg-secondary/50 border border-border rounded-2xl p-6 space-y-4 h-full">
                     <div className="flex gap-0.5">
                       {Array.from({ length: 5 }).map((_, i) => (
                         <Star
@@ -141,11 +144,11 @@ const Index = () => {
 
       {/* CTA */}
       <section className="px-6 py-12 text-center">
-        <div className="bg-secondary rounded-2xl p-8 max-w-sm mx-auto">
-          <h2 className="text-2xl font-bold text-foreground mb-2">Ready to find your crew?</h2>
-          <p className="text-sm text-muted-foreground mb-6">It takes less than 2 minutes to get started.</p>
+        <div className="bg-secondary rounded-2xl p-8 max-w-sm md:max-w-2xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Ready to find your crew?</h2>
+          <p className="text-sm md:text-base text-muted-foreground mb-6">It takes less than 2 minutes to get started.</p>
           <Button
-            className="rounded-full px-8 h-12 text-base font-semibold w-full"
+            className="rounded-full px-8 h-12 text-base font-semibold md:w-auto w-full"
             onClick={() => navigate("/get-started")}
           >
             Get Started
@@ -155,7 +158,7 @@ const Index = () => {
 
       {/* Footer */}
       <footer className="border-t border-border px-6 py-8">
-        <div className="max-w-sm mx-auto space-y-6">
+        <div className="max-w-sm md:max-w-4xl mx-auto space-y-6">
           <div className="flex items-center justify-between">
             <span className="text-lg font-bold text-foreground">
               <span className="text-primary">H</span>uddle
