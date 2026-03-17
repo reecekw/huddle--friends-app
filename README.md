@@ -1,173 +1,268 @@
-# BB Find a Friend
+# Huddle
 
-## App Summary
+Huddle is a full-stack prototype for helping people meet new friends through a short onboarding flow, a personality quiz, and group-based chat experiences. The original project idea in the repo is "BB Find a Friend"; the current UI branding is `Huddle`.
 
-BB Find a Friend helps people form lasting friendships by connecting them with compatible groups based on their personality and social preferences. The primary users are individuals who struggle to meet new people or want to expand their social circle—whether they’re new to an area, have shifting schedules, or prefer structured ways to make friends. The app offers a personality test to understand how outgoing and social a user is, then matches them with groups for activities like sports, gaming, study, or casual hangouts. Users can browse groups, view member lists, and chat within groups. The product reduces the friction of finding like-minded friends and provides a single place to discover and join social groups.
+## What This Project Does
+
+The app is designed around a simple flow:
+
+1. A user lands on the marketing page
+2. They complete a short profile form
+3. They take a 4-question personality quiz
+4. Their quiz answers are saved to a SQLite database through an Express API
+5. They are taken to a chat experience with mock friend groups
+
+At the moment, the personality quiz submission is the main working frontend-to-backend vertical slice. The rest of the experience is primarily UI/demo behavior.
+
+## Current Feature Set
+
+### Implemented
+
+- Landing page with product messaging and testimonial carousel
+- Onboarding form for basic profile details
+- Client-side login state stored in `localStorage`
+- Light/dark theme toggle stored in `localStorage`
+- 4-question personality quiz
+- Express API for saving quiz responses
+- SQLite persistence for `personalitytest` and `personalityquestion`
+- Chat list and chat conversation UI
+
+### Not Fully Implemented Yet
+
+- Real authentication or password handling
+- Real user account creation
+- Real matching logic
+- Database-backed chat/group rendering
+- Real-time messaging
+- Production deployment setup
+- Meaningful automated test coverage
 
 ## Tech Stack
 
 | Layer | Technologies |
 |-------|--------------|
-| **Frontend** | React 18, TypeScript, Vite, React Router, TanStack Query |
-| **UI & Styling** | Tailwind CSS, shadcn/ui, Radix UI, Lucide icons |
-| **Backend** | Node.js, Express |
-| **Database** | SQLite (via better-sqlite3) |
-| **Authentication** | Not yet implemented |
-| **External Services** | None |
+| Frontend | React 18, TypeScript, Vite, React Router |
+| UI | Tailwind CSS, shadcn/ui, Radix UI, Lucide |
+| Backend | Node.js, Express |
+| Database | SQLite via `better-sqlite3` |
+| Tooling | ESLint, Vitest, Testing Library |
 
-## Architecture Diagram
+## Architecture Overview
 
-```
-┌─────────────┐
-│    User     │
-└──────┬──────┘
-       │ HTTP (browser)
-       ▼
-┌─────────────────────────────────────────────────────────────┐
-│                     Frontend (Vite + React)                  │
-│                      http://localhost:8080                   │
-│  - Personality Test, Chats, Reviews                          │
-│  - Calls /api/* for backend operations                       │
-└──────────────────────────────┬──────────────────────────────┘
-                               │ HTTP (fetch)
-                               │ /api/personality-results (POST)
-                               │ /api/personality-results/count (GET)
-                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│                     Backend (Express)                        │
-│                    http://localhost:3001                     │
-│  - REST API for personality results                          │
-│  - Validates input, persists to DB, returns JSON             │
-└──────────────────────────────┬──────────────────────────────┘
-                               │ SQL
-                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│                   Database (SQLite)                          │
-│                      db/app.db                               │
-│  - user, reviews, message, groupchat,                        │
-│    user_groupchat, personalitytest, personalityquestion,     │
-│    templatePersonalityTest, templatePersonalityQuestion      │
-└─────────────────────────────────────────────────────────────┘
+```text
+Browser
+  -> React + Vite frontend (`src/`) on http://localhost:8080
+  -> Express API (`server/server.js`) on http://localhost:3001
+  -> SQLite database (`db/app.db`)
 ```
 
-**Flow for Personality Test submit:**
-1. User completes sliders and clicks **Next**
-2. Frontend sends `POST /api/personality-results` with `{ q1, q2, q3, q4 }`
-3. Backend inserts into `personalitytest` and `personalityquestion` tables
-4. Backend returns `{ id, totalSubmissions, ... }`
-5. Frontend displays the result (submission # and total count) and shows "Continue to Chats"
+### Personality Quiz Flow
+
+1. The user completes the 4 quiz questions in `src/pages/PersonalityTest.tsx`
+2. The frontend sends `POST /api/personality-results`
+3. The Express server validates `q1` through `q4`
+4. The server inserts one row into `personalitytest`
+5. The server inserts one row per answer into `personalityquestion`
+6. The frontend shows a completion screen and routes the user to chats
+
+## Repository Structure
+
+```text
+src/                Frontend app
+src/pages/          Route-level pages
+src/components/     Shared app components/providers
+src/components/ui/  shadcn/ui component library
+server/             Express server and DB init script
+db/                 SQLite schema, seed data, and generated DB file
+public/             Static assets
+```
 
 ## Prerequisites
 
-| Software | Purpose | Installation |
-|----------|---------|--------------|
-| **Node.js** (v18+) | Runtime for frontend and backend | [nodejs.org](https://nodejs.org/) or [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) |
-| **npm** | Package manager (included with Node.js) | — |
+- Node.js 18+
+- npm 9+
 
-**Verify installation:**
+Check your versions:
 
 ```sh
-node --version   # Expect v18.x or higher
-npm --version    # Expect 9.x or higher
+node --version
+npm --version
 ```
 
-No separate database server is required; SQLite runs as a file-based database.
+No separate database server is required because SQLite is file-based.
 
-## Installation and Setup
+## Installation
 
-### 1. Clone the repository
-
-```sh
-git clone <YOUR_GIT_URL>
-cd kindred-connect-38
-```
-
-### 2. Install frontend dependencies
+From the project root:
 
 ```sh
 npm install
-```
-
-### 3. Create the database
-
-Initialize the database from `db/schema.sql` and `db/seed.sql`:
-
-```sh
 npm run server:setup
 ```
 
-This script installs server dependencies, creates `db/app.db`, runs the schema, and inserts sample data.
+What `npm run server:setup` does:
 
-### 4. Environment variables
+- installs backend dependencies in `server/`
+- creates `db/app.db`
+- runs `db/schema.sql`
+- runs `db/seed.sql`
 
-None required. The backend uses `PORT=3001` by default. If port 3001 is in use, run `PORT=3002 npm run server` and ensure the Vite proxy in `vite.config.ts` targets `http://localhost:3002` (or whatever port you use).
+## Running Locally
 
-## Running the Application
-
-### Terminal 1 – Backend
+Start the backend in one terminal:
 
 ```sh
 npm run server
 ```
 
-Backend runs at **http://localhost:3001** (or the port in `PORT`). If you changed `PORT`, ensure `vite.config.ts` proxies `/api` to that port.
-
-### Terminal 2 – Frontend
+Start the frontend in a second terminal:
 
 ```sh
 npm run dev
 ```
 
-Frontend runs at **http://localhost:8080**.
+Local URLs:
 
-Open **http://localhost:8080** in your browser.
+- Frontend: `http://localhost:8080`
+- Backend: `http://localhost:3001`
 
-## Verifying the Vertical Slice
+## Available Scripts
 
-This section confirms the Personality Test "Next" button correctly updates the database and reflects the change in the UI.
-
-### 1. Trigger the feature
-
-1. Open http://localhost:8080
-2. Click **Get Started** (or **Log in**) and go through the flow
-3. Navigate to **Personality Test** (via the menu or Get Started → Next)
-4. Adjust the sliders for the four questions
-5. Click **Next**
-
-### 2. Confirm the database was updated
-
-A success message should appear with:
-- "You are submission #X"
-- "Total submissions: Y"
-
-The backend inserted into the `personalitytest` and `personalityquestion` tables. To verify, use the SQLite CLI (if installed):
+### Root
 
 ```sh
-sqlite3 db/app.db "SELECT * FROM personalitytest ORDER BY id DESC LIMIT 5;"
+npm run dev
+npm run build
+npm run preview
+npm run lint
+npm run test
+npm run server
+npm run server:init
+npm run server:setup
 ```
 
-Or query the API (use the port your server runs on):
+### Server
+
+Inside `server/`:
+
+```sh
+npm run start
+npm run init-db
+```
+
+## Configuration
+
+There is no `.env` file in the repo today.
+
+Current config behavior:
+
+- The backend defaults to `PORT=3001`
+- The frontend dev server runs on port `8080`
+- Vite proxies `/api` requests to `http://localhost:3001`
+
+If you change the backend port, you also need to update the proxy target in `vite.config.ts`.
+
+Example:
+
+```sh
+PORT=3002 npm run server
+```
+
+Then update `vite.config.ts` so `/api` points to `http://localhost:3002`.
+
+## Database Notes
+
+The database schema includes tables for:
+
+- `user`
+- `reviews`
+- `groupchat`
+- `message`
+- `user_groupchat`
+- `templatePersonalityTest`
+- `templatePersonalityQuestion`
+- `personalitytest`
+- `personalityquestion`
+
+Important note: while the schema includes users, reviews, groups, and messages, the current frontend only writes live data to the personality-test tables. The chat UI currently uses mock frontend data.
+
+## API Endpoints
+
+### `POST /api/personality-results`
+
+Accepts:
+
+```json
+{
+  "q1": 50,
+  "q2": 3,
+  "q3": 50,
+  "q4": 50
+}
+```
+
+Behavior:
+
+- validates all four values are numbers
+- inserts quiz data into SQLite
+- returns the created `personalitytest` row plus `totalSubmissions`
+
+### `GET /api/personality-results/count`
+
+Returns the total number of rows in `personalitytest`.
+
+## How To Verify The Working Vertical Slice
+
+1. Run the frontend and backend locally
+2. Open `http://localhost:8080`
+3. Click `Get Started`
+4. Fill in at least first name and city
+5. Complete the personality quiz
+6. Submit the final question
+
+Expected result:
+
+- you should see the completion screen
+- the backend should save a new quiz submission
+- the chats screen should be accessible after the quiz flow
+
+To confirm the database changed:
+
+```sh
+sqlite3 db/app.db "SELECT id, results FROM personalitytest ORDER BY id DESC LIMIT 5;"
+```
+
+To confirm the API count endpoint:
 
 ```sh
 curl http://localhost:3001/api/personality-results/count
-# or, if using PORT=3002: curl http://localhost:3002/api/personality-results/count
 ```
 
-The `total` value should match the count shown in the UI.
+Because the database is stored in `db/app.db`, quiz submissions persist between app restarts unless that file is deleted.
 
-The newest row in the table should match your last submission.
+## Testing
 
-### 3. Verify persistence after refresh
+Run:
 
-1. On the Personality Test page, note the total count after submitting (e.g., "Total submissions: 11")
-2. Click **Continue to Chats** (or navigate away and back)
-3. Return to the Personality Test page and submit again
-4. The new submission should be #12 (or higher), and the total count should increase
+```sh
+npm run test
+```
 
-Because data is stored in `db/app.db`, it persists across restarts of the backend. Restarting the server and resubmitting will still show an incrementing submission ID and total count.
+Note: the repo currently contains only a placeholder example test, so passing tests do not provide meaningful feature coverage yet.
 
----
+## Known Limitations
 
-## Project info
+- App naming is inconsistent across the repo (`Huddle`, `BB Find a Friend`, and `kindred-connect-server`)
+- The current "login" flow is only local state and not secure authentication
+- Chat groups and messages are mock data in the frontend
+- Seed data is not designed as a full production migration system
+- Re-running database initialization may cause duplicate seed rows or constraint issues depending on the current database state
+- `better-sqlite3` is a native dependency, so install issues may require local build tooling on some machines
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Future Improvements
+
+- Connect onboarding data to persistent user records
+- Replace mock chat data with database-backed queries
+- Add real authentication and session handling
+- Implement actual friend-group matching logic
+- Add stronger test coverage for the frontend and API
